@@ -14,5 +14,11 @@ class HelperString {
         // swift: url.components(separatedBy: "/").filter({ $0 != ""}).last!
         return url.components(separatedBy: "/").filter({ $0 != ""}).last!
     }
+    
+    static func getURLFromString(url: String) -> URL? {
+        guard let url = URL(string: url) else { return nil }
+        
+        return url
+    }
 }
 

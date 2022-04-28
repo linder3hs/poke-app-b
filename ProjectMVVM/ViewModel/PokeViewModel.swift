@@ -11,14 +11,13 @@ class PokeViewModel {
     
     var pokemons = [Result]()
     
-    let URL_API: String = "https://pokeapi.co/api/v2/pokemon"
+    var pokemon: PokeDetail? = nil
+    
+    let URL_API: String = "https://pokeapi.co/api/v2/pokemon?limit=100"
     
     func getDataFromAPI() async {
-        // Pasa1: Convertir el string a URL
-        guard let url = URL(string: URL_API) else { return }
-        
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let (data, _) = try await URLSession.shared.data(from: HelperString.getURLFromString(url: URL_API)!)
             
             if let decoder = try? JSONDecoder().decode(Pokemon.self, from: data) {
                 DispatchQueue.main.async(execute: {
@@ -31,14 +30,20 @@ class PokeViewModel {
         } catch {
             print("error found")
         }
-        
-//        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-//            // Haremos una validacion para saber si data sea valido
-//            if let data = data {
-//                let decode = String(data: data, encoding: .utf8)
-//                print(decode!)
-//            }
-//        }
-//        task.resume()
+    }
+    
+    // Functio get info from url
+    func getPokeDetail(url: String) async {
+        do {
+            let (data, _) = try await URLSession.shared.data(from: HelperString.getURLFromString(url: url)!)
+            
+            if let decoder = try? JSONDecoder().decode(PokeDetail.self, from: data) {
+                DispatchQueue.main.async(execute: {
+                    self.pokemon = decoder
+                })
+            }
+        } catch {
+            print("error found")
+        }
     }
 }

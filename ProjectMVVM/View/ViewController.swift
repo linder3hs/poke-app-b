@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     let pokeViewModel: PokeViewModel = PokeViewModel()
     
     var filterData: [Result] = []
+    var urlToDetail: String? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +35,7 @@ class ViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         searchBar.delegate = self
+        navigationItem.backButtonTitle = ""
     }
     
 }
@@ -58,7 +60,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(filterData[indexPath.row].name)
+        urlToDetail = filterData[indexPath.row].url
+        performSegue(withIdentifier: "detail", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "detail" {
+            let pokeDetailView = segue.destination as! PokeDetailViewController
+            pokeDetailView.url = urlToDetail!
+        }
     }
 }
 
